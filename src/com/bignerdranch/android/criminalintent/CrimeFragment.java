@@ -13,6 +13,7 @@ import android.widget.CompoundButton;
 import android.text.TextWatcher;
 import android.text.Editable;
 import java.lang.CharSequence;
+import android.text.format.DateFormat;
 
 public class CrimeFragment extends Fragment
 {
@@ -52,8 +53,11 @@ public class CrimeFragment extends Fragment
 			}
 		);
 		
+		java.text.DateFormat tf = DateFormat.getTimeFormat(container.getContext());
+		java.text.DateFormat df = DateFormat.getDateFormat(container.getContext());
 		mDateButton = (Button) v.findViewById(R.id.crime_date);
-		mDateButton.setText(mCrime.getDate().toString());
+		//mDateButton.setText(mCrime.getDate().toString());
+		mDateButton.setText(df.format(mCrime.getDate()) + " " + tf.format(mCrime.getDate()));
 		mDateButton.setEnabled(false);
 		
 		mSolvedCheckBox = (CheckBox) v.findViewById(R.id.crime_solved);
