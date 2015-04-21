@@ -53,11 +53,12 @@ public class CrimeFragment extends Fragment
 			}
 		);
 		
-		java.text.DateFormat tf = DateFormat.getTimeFormat(container.getContext());
-		java.text.DateFormat df = DateFormat.getDateFormat(container.getContext());
+		//java.text.DateFormat tf = DateFormat.getTimeFormat(container.getContext());
+		//java.text.DateFormat df = DateFormat.getDateFormat(container.getContext());
 		mDateButton = (Button) v.findViewById(R.id.crime_date);
 		//mDateButton.setText(mCrime.getDate().toString());
-		mDateButton.setText(df.format(mCrime.getDate()) + " " + tf.format(mCrime.getDate()));
+		//mDateButton.setText(df.format(mCrime.getDate()) + " " + tf.format(mCrime.getDate()));
+		mDateButton.setText(Util.dateToString(mCrime.getDate()));
 		mDateButton.setEnabled(false);
 		
 		mSolvedCheckBox = (CheckBox) v.findViewById(R.id.crime_solved);
