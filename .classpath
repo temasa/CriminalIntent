@@ -4,5 +4,5 @@
 <classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 <classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 <classpathentry kind="output" path="bin/classes"/>
-<classpathentry kind="lib" path="/sdcard/Download/android-support-v4.jar/android-support-v4.jar"/>
+<classpathentry kind="lib" path="/sdcard/Download/android-support-v4-1.jar"/>
 </classpath>
