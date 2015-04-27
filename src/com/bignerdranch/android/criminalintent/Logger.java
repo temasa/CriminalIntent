@@ -8,4 +8,8 @@ public class Logger
 	public static void d(Class theClass, String methodName, String description) {
 		Log.d(theClass.getSimpleName(),  methodName + ";" + description + ";");
 	}
+	
+	public static void e(Class theClass, String methodName, String description) {
+		Log.d(theClass.getSimpleName(),  methodName + ";" + description + ";");
+	}
 }
