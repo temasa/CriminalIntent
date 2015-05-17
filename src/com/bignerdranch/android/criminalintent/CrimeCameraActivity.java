@@ -8,6 +8,7 @@ import android.view.WindowManager;
 
 public class CrimeCameraActivity extends SingleFragmentActivity
 {
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
 	{

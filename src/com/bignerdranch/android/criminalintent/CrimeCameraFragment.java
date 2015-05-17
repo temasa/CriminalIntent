@@ -14,12 +14,65 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import java.io.IOException;
 import java.util.List;
+import android.hardware.Camera;
+import java.util.UUID;
+import java.io.FileOutputStream;
+import android.content.Context;
+import android.content.Intent;
+import android.app.Activity;
 
 public class CrimeCameraFragment extends Fragment
 {
 
+	public static final String EXTRA_PHOTO_FILENAME =
+		"com.bignerdranch.android.criminalintent.photo_filename";
+	
 	private Camera mCamera;
 	private SurfaceView mSurfaceView;
+	private View mProgressContainer;
+	private Camera.ShutterCallback mShutterCallback = 
+		new Camera.ShutterCallback() {
+			public void onShutter() {
+				mProgressContainer.setVisibility(View.VISIBLE);
+			}
+		};
+	private Camera.PictureCallback mJpegCallback =
+		new Camera.PictureCallback() {
+			public void onPictureTaken(byte[] data, Camera camera) {
+				String filename = UUID.randomUUID().toString() + ".jpg";
+				FileOutputStream os = null;
+				boolean success = true;
+				try {
+					os = getActivity().openFileOutput(filename, Context.MODE_PRIVATE);
+					os.write(data);
+					Logger.d(CrimeCameraFragment.this.getClass(), "onPictureTaken", "success");
+				}
+				catch (Exception e) {
+					success = false;
+					Logger.e(CrimeCameraFragment.this.getClass(), "onPictureTaken", e.toString());
+				}
+				finally {
+					try {
+						if (null != os) {
+							os.close();
+						}
+					}
+					catch (Exception e) {
+						Logger.e(CrimeCameraFragment.this.getClass(), "onPictureTaken", e.toString());
+					}
+				}
+				
+				if (success) {
+					Intent i = new Intent();
+					i.putExtra(EXTRA_PHOTO_FILENAME, filename);
+					getActivity().setResult(Activity.RESULT_OK, i);
+				}
+				else {
+					getActivity().setResult(Activity.RESULT_CANCELED);
+				}
+				getActivity().finish();
+			}
+		};
 	
 	@TargetApi(9)
 	@Override
@@ -49,11 +102,17 @@ public class CrimeCameraFragment extends Fragment
 	{
 		View v = inflater.inflate(R.layout.fragment_crime_camera, parent, false);
 		
+		mProgressContainer = v.findViewById(R.id.crime_camera_progressContainer);
+		mProgressContainer.setVisibility(View.INVISIBLE);
+		
 		Button takePictureButton = (Button) v.findViewById(R.id.crime_camera_takePictureButton);
 		takePictureButton.setOnClickListener(
 			new View.OnClickListener() {
 				public void onClick(View view) {
-					getActivity().finish();
+					//getActivity().finish();
+					if (null != mCamera) {
+						mCamera.takePicture(mShutterCallback, null, mJpegCallback);
+					}
 				}
 			}
 		);
@@ -86,6 +145,9 @@ public class CrimeCameraFragment extends Fragment
 					Camera.Parameters parameters = mCamera.getParameters();
 					Camera.Size s = getBestSupportedSize(parameters.getSupportedPreviewSizes(), w, h);
 					parameters.setPreviewSize(s.width, s.height);
+					s = getBestSupportedSize(parameters.getSupportedPictureSizes(), w, h);
+					parameters.setPictureSize(s.width, s.height);
+					mCamera.setParameters(parameters);
 					try {
 						mCamera.startPreview();
 					}
@@ -113,7 +175,5 @@ public class CrimeCameraFragment extends Fragment
 		}
 		
 		return bestSize;
-		
-		
 	}
 }
